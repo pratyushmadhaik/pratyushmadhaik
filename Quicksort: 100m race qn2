@@ -1,0 +1,9 @@
+def moreThan11():
+    myFile = open("RACE.csv","r")
+    runner_count = 0
+    for line in myFile:
+        ncline = line.split(",")
+        race_time = float(ncline[3])
+        if race_time > 11.0:
+            runner_count = runner_count + 1
+    return(runner_count)
