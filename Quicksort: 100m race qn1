@@ -1,0 +1,25 @@
+def Partition(Arr, First, Last):
+    PivotValue = Arr[First]
+    LeftMark = First + 1
+    RightMark = Last
+    Done = False
+
+    while Done == False:
+        while LeftMark <= RightMark and Arr[LeftMark] <= PivotValue:
+            LeftMark = LeftMark + 1
+        while LeftMark <= RightMark and Arr[RightMark] >= PivotValue:
+            RightMark = RightMark - 1
+        if LeftMark > RightMark:
+            Done = True
+        else:
+            Arr[LeftMark],Arr[RightMark] = Arr[RightMark],Arr[LeftMark]
+    Arr[First],Arr[RightMark] = Arr[RightMark],Arr[First]
+    return RightMark
+    
+def Quicksort(Array, First, Last):
+    if First < Last:
+        SplitPoint = Partition(Array, First, Last)
+        Quicksort(Array, First, SplitPoint - 1)
+        Quicksort(Array, SplitPoint + 1, Last)
+    return Array
+data2 = [11, 88, 66, 50, 44, 55, 22, 77, 33, 99]
