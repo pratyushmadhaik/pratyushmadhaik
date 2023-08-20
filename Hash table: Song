@@ -1,0 +1,116 @@
+class SongRecord:
+    def __init__(self, SongID=None, SongTitle=None):
+        self.SongID = SongID
+        self.SongTitle = SongTitle
+        self.Pointer = None
+    def getSongID(self):
+        return self.SongID
+    def setSongID(self, songID):
+        self.SongID = songID
+    def getSongTitle(self):
+        return self.SongTitle
+    def setSongTitle(self, title):
+        self.SongTitle = title
+    def getPointer(self):
+        return self.Pointer
+    def setPointer(self, ptr):
+        self.Pointer = ptr
+class LinkedList:
+    def __init__(self):
+        self.Start = None
+    def IsEmpty(self):
+        return self.Start == None
+    def AddNode(self, SongID, SongTitle):
+        NewNode = SongRecord(SongID, SongTitle)
+        if self.IsEmpty():
+            self.Start = NewNode
+        else:
+            temp = self.Start
+            self.Start = NewNode
+            NewNode.setPointer(temp)
+    def DeleteNode(self, SongID):
+        if self.IsEmpty():
+            return "Empty linked list. Nothing to delete."
+        previous = None
+        current = self.Start
+        while current.getSongID() != SongID and current.getPointer != None:
+            previous = current
+            current = current.getPointer()
+        if previous == None:#first node to be deleted
+            if current.getSongID() == SongID:
+                self.Start = current.getPointer()
+        elif current.getSongID() == SongID:
+            previous.setPointer(current.getPointer())
+        else:
+            print("SongID",SongID, "does not exist")
+    def SearchNode(self, SongID):
+        current = self.Start
+        while current is not None:
+            if current.getSongID() == SongID:
+                return current.getSongTitle()
+            current = current.getPointer()
+        return False
+    def DisplayLinkedList(self):
+        outputStr = ""#store the data of linked list as a string
+        temp = self.Start
+        while temp is not None:
+            outputStr += "| {} | {} | -->".format(temp.getSongID(), temp.getSongTitle())
+            temp = temp.getPointer()
+        outputStr += "NULL"
+        print(outputStr)
+class HashTable:
+    def __init__(self, size):
+        # initialises Size attribute with value size
+        # Size : integer
+        self.Size = size
+        # initialises Array attribute to store size number of Python lists
+        # Array : ARRAY[0:size-1] OF LIST
+        self.Array = [LinkedList() for i in range(self.Size+1)]
+        #self.Size = size
+        #self.Array = [LinkedList() for i in range(self.Size + 1)]
+    def Hash(self, SongID):
+        total = 0
+        for char in SongID:
+            total += ord(char)
+        Address = total % (self.Size) + 1
+        return Address
+    # sums the ASCII value of each character in SongID
+    # returns the remainder when the sum is divided by the size of Array
+    def Display(self):
+        for i in range(self.Size):
+            print("{}|{}".format(i+1, self.Array[i+1].DisplayLinkedList()))
+    def Add(self, SongID, SongTitle):
+        hashCode = self.Hash(SongID)
+        self.Array[hashCode].AddNode(SongID, SongTitle)
+    def Remove(self, SongID):
+        hashCode = self.Hash(SongID)
+        if not self.Array[hashCode].IsEmpty():
+           self.Array[hashCode].DeleteNode(SongID)
+    # deletes the SongRecord with SongID from Array
+    def Search(self, SongID):
+        hashCode = self.Hash(SongID)
+        if self.Array[hashCode].SearchNode(SongID) != False:
+            return self.Array[hashCode].SearchNode(SongID)
+        return 'NONE'
+# uses hash table search to find the SongRecord with SongID in Array
+# returns the associated SongTitle if found or "NONE" if not found
+# DO NOT EDIT OR DELETE THE FOLLOWING CODE
+# ========================================
+hta1 = HashTable(13)  # hash table of size 13
+hta1.Add("EL0078", "Hotel California")
+hta1.Add("CL0123", "K-King")
+hta1.Add("CL0010", "Red Bean")
+hta1.Add("EL7810", "Lady in Red")
+hta1.Add("CL2310", "Ninja")
+hta1.Add("EL1610", "Tears in Heaven")
+hta1.Add("CL3210", "Beach")
+hta1.Add("EL0611", "Unchained Melody")
+hta1.Remove("CL2310")
+hta1.Remove("EL0078")
+hta1.Add("EL0870", "Witulah")
+#hta1.Display()
+a = hta1.Search("CL3210")
+b = hta1.Search("CL2310")
+c = hta1.Search("EL1610")
+d = hta1.Search("EL0611")
+e = hta1.Search("EL0870")
