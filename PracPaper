@@ -1,0 +1,222 @@
+#Task 1.1
+def upcCheckDigit(dataDigits):
+    dataDigits2 = dataDigits.replace(" ", "")
+    if len(dataDigits2) != 11 or dataDigits2.isdigit() != True:
+        return -1
+    else:
+        digit_list = []
+        for num in dataDigits2:
+            digit_list.append(num)
+        preresult = (digit_list[0] + digit_list[2] + digit_list[4] + digit_list[6] + digit_list[8] + digit_list[10])*3 + (digit_list[1] + digit_list[3] + digit_list[5] + digit_list[7] + digit_list[9])
+        result = 0
+        for char in str(preresult):
+            result = result + int(char)
+
+        remainder = int(result) % 10
+        if remainder == 0:
+            check_digit = 0
+        else:
+            check_digit = 10 - int(remainder)
+        return check_digit
+#Task 1.2
+my_file = open("upc.txt", "r")
+llst = []
+for line in my_file:
+    x = str(line)
+    new_line = line[:15]
+    llst.append(new_line)
+for item in llst:
+    if int(item[-1]) == int(upcCheckDigit(item[:13])):
+        result = "Valid 12-digit UPC"
+    else:
+        result = "Invalid 12-digit UPC"
+
+    message = str(item) + ' : ' + str(result)
+    print(message)
+
+my_file.close()
+
+
+#Task 2.1
+class ListNode:
+    def __init__(self, name="", ptr=-1):
+        self.__Name = name
+        self.__Pointer = ptr
+
+    def getName(self):
+        return self.__Name
+
+    def getPointer(self):
+        return self.__Pointer
+
+    def setName(self, data):
+        self.__Name = data
+
+    def setPointer(self, ptr):
+        self.__Pointer = ptr
+
+class LinkedList:
+    def __init__(self, size=20):
+        self.__Make = [ListNode() for i in range(size)]
+        self.__Start = -1
+        self.__NextFree = 0
+        for i in range(size - 1):
+            self.__Make[i].setPointer(i + 1)
+
+    def IsEmpty(self):
+        return self.__Start == -1
+
+    def IsFull(self):
+        return self.__Start == 19
+
+    def Insert(self, item):
+        if self.__NextFree == -1:
+            print("No free node available")
+            return
+
+        self.__Make[self.__NextFree].setName(item)
+
+        if self.__Start == -1:
+            temp = self.__Make[self.__NextFree].getPointer()
+            self.__Make[self.__NextFree].setPointer(-1)
+            self.__Start = self.__NextFree
+            self.__NextFree = temp
+        else:
+            previous = -1
+            current = self.__Start
+            while current != -1:
+                if item < self.__Make[current].getName():
+                    break
+                previous = current
+                current = self.__Make[current].getPointer()
+
+            if previous == -1:
+                temp = self.__Make[self.__NextFree].getPointer()
+                self.__Make[self.__NextFree].setPointer(self.__Start)
+                self.__Start = self.__NextFree
+                self.__NextFree = temp
+            else:
+                temp = self.__Make[self.__NextFree].getPointer()
+                self.__Make[self.__NextFree].setPointer(current)
+                self.__Make[previous].setPointer(self.__NextFree)
+                self.__NextFree = temp
+
+    def Delete(self, Data):
+        if self.__Start == -1:
+            print("Nothing to delete!")
+            return
+        previous = -1
+        current = self.__Start
+        while current != -1:
+            if Data == self.__Make[current].getName():
+                break
+            previous = current
+            current = self.__Make[current].getPointer()
+        if current == -1:
+            print("Node not found")
+            return
+        self.__Make[current].setName("<DELETED>")
+        if previous == -1:
+            temp = self.__NextFree
+            self.__NextFree = current
+            self.__Start = self.__Make[current].getPointer()
+            self.__Make[current].setPointer(temp)
+        else:
+            temp = self.__NextFree
+            self.__NextFree = current
+            self.__Make[previous].setPointer(self.__Make[current].getPointer())
+            self.__Make[current].setPointer(temp)
+
+    def Display(self):
+        print("{:<7}|{:<12}|{:<8}".format("index", "data", "pointer"))
+        for index in range(len(self.__Make)):
+            print("{:<7}|{:<12}|{:<8}".\
+                  format(index, self.__Make[index].getName(), self.__Make[index].getPointer()))
+        print("StartPtr =", self.__Start, "  NextFree =", self.__NextFree)
+
+
+#Task 2.2
+def menu():
+    print("""\n1. Initialise linked list
+2. Insert item
+3. Delete item
+4. Display linked list
+5. Exit program""")
+
+def main():
+    while True:
+        menu()
+        choice = input("Select your choice: ")
+        if choice == '1':
+            llst = LinkedList()
+        elif choice == '2':
+            try:
+                item = input("Input item to insert: ")
+                llst.Insert(item)
+            except:
+                print("Error. Cannot insert.")
+        elif choice == '3':
+            try:
+                item = input("Input item to delete: ")
+                llst.Delete(item)
+            except:
+                print("Error. Cannot delete.")
+        elif choice == '4':
+            try:
+                llst.Display()
+            except:
+                print("Error in display.")
+        elif choice == '5':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid option selected. Select 1 to 5 only.")
+
+main()
+
+#Task 3.1
+def quicksort(arr, first, last):
+    low = first
+    high = last
+    pivot = arr[len(arr)//2]
+    while low <= high:
+        while arr[low] < pivot:
+            low = low + 1
+
+        while arr[high] > pivot:
+            high = high - 1
+
+        if low <= high:
+            arr[low], arr[high] = arr[high], arr[low]
+            low = low + 1
+            high = high - 1
+    print(arr)
+    if first < high:
+        return quicksort(arr, first, high)
+    if low < last:
+        return quicksort(arr, low, last)
+
+#Task 3.2
+def quicksort2(arr):
+    if len(arr) <= 1:
+        return arr
+    else:
+        pivot = arr[0]
+        lesser = [x for x in arr[1:] if x <= pivot]
+        greater = [x for x in arr[1:] if x > pivot]
+
+    return quicksort2(lesser) + [pivot] + quicksort2(greater)
+
+import timeit
+arr = [616, 503, 982, 863, 847, 781, 218, 405, 877, 653, 276, 445, 290, 605, 809, 177, 713, 133, 181, 607, 198, 787, 687, 466, 339, 742, 428, 281, 474, 567]
+sorted_arr = quicksort2(arr)
+results = timeit.repeat(lambda: sorted_arr, repeat=7, number=1)
+print(min(results))
+
+'''
+import timeit
+arr = [616, 503, 982, 863, 847, 781, 218, 405, 877, 653, 276, 445, 290, 605, 809, 177, 713, 133, 181, 607, 198, 787, 687, 466, 339, 742, 428, 281, 474, 567]
+sorted_arr2 = quicksort(arr, 0, 29)
+results = timeit.repeat(lambda: sorted_arr2, repeat=7, number=1)
+print(min(results))
+'''
