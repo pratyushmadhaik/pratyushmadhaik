@@ -1,0 +1,102 @@
+# LINEAR SEARCH (ON A SORTED ARRAY) #
+def linear_search(arr, target):
+    for i in range(len(arr)):
+        if arr[i] == target:
+            return i  # Found the target, return its index
+    return -1
+
+# BINARY SEARCH (ITERATIVE) #
+def binary_search(arr, target):
+    left = 0
+    right = len(arr) - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if arr[mid] == target:
+            return mid
+
+        if arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return -1
+
+# BINARY SEARCH (RECURSIVE) #
+def binary_search(arr, target, left, right):
+    if left > right:
+        return -1
+
+    mid = (left + right) // 2
+
+    if arr[mid] == target:
+        return mid
+
+    if arr[mid] < target:
+        return binary_search(arr, target, mid + 1, right)
+    else:
+        return binary_search(arr, target, left, mid - 1)
+
+# INSERTION SORT #
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+
+# BUBBLE SORT #
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+# QUICKSORT #
+def quicksort(arr):
+    if len(arr) <= 1:
+        return arr
+    else:
+        pivot = arr[0]  # Choose the first element as the pivot
+        lesser = [x for x in arr[1:] if x <= pivot]  # Elements less than or equal to the pivot
+        greater = [x for x in arr[1:] if x > pivot]  # Elements greater than the pivot
+        return quicksort(lesser) + [pivot] + quicksort(greater)
+
+# MERGE SORT #
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    # Split the array into two halves
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+
+    # Recursively sort the two halves
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
+
+    # Merge the sorted halves
+    return merge(left_half, right_half)
+
+def merge(left, right):
+    merged = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            merged.append(left[i])
+            i += 1
+        else:
+            merged.append(right[j])
+            j += 1
+
+    # Add any remaining elements
+    merged.extend(left[i:])
+    merged.extend(right[j:])
+
+    return merged
