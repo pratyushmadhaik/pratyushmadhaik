@@ -1,0 +1,79 @@
+#Task 1.1
+
+def task1_1(string_value):
+    h = 0
+    for i in range(0, len(string_value)-1):
+        val = 33 * (ord(string_value[i]))
+        h = (h + val) % 1024
+    return h
+
+u = task1_1("Hello")
+print(task1_1("Hello"))
+print(task1_1("Hallo"))
+print(task1_1("Hullo"))
+
+
+
+#Task 1.2
+def task1_2(seed, string_value):
+    new_val = seed + string_value
+    return task1_1(new_val)
+    
+
+
+
+#Task 2.1
+import random
+def task2_1(filename, quantity, maximum):
+    val = []
+    for i in range(0, quantity):
+        value = random.randint(0, maximum)
+        val.append(value)
+
+    my_file = open(filename, 'w')
+    for values in val:
+        my_file.write(str(values))
+    my_file.close()
+    return my_file
+
+print(task2_1('randomnumbers.txt', 1000, 5000))
+
+
+#Task2_2
+def merge(left, right):
+    merged = []
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            merged.append(left[i])
+            i += 1
+        else:
+            merged.append(right[j])
+            j += 1
+
+    # Add any remaining elements
+    merged.extend(left[i:])
+    merged.extend(right[j:])
+
+    return merged  
+
+
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    # Split the array into two halves
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+
+    # Recursively sort the two halves
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
+
+    # Merge the sorted halves
+    return merge(left_half, right_half)
+
+
+print(merge_sort([56,25,4,98,0,18,4,5,7,0]))
